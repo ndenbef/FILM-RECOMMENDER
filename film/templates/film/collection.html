@@ -1,0 +1,29 @@
+{% extends "film/layout.html" %}
+
+{% block content %}
+  <h1>Mes collections</h1>
+  <ul>
+    {% for collection in collections %}
+      <ol><h2>{{ collection.nom }} <a href="{% url 'film:supprimer_collection' nom=collection.nom %}">(supprimer)</a></h2></ol>
+      <ul>
+        <div class="row mt-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" style="display: grid; grid-template-columns: repeat(4, 1fr);">
+        {% for film in collection.films.all %}
+        <div class="col-md-3" style="display: grid; grid-template-columns: repeat(4, 1fr);">
+          <div class="card text-center h-100" style="width: 13rem;">
+              <img src="https://image.tmdb.org/t/p/w200{{ film.poster_path }}" class="card-img-top" alt="{{ film.title }}">
+              <div class="card-body">
+              <a class="card-text" href="{% url 'film:film_detail' film_id=film.id %}"> {{ film.title }} </a>
+          </div>
+          </div>
+      <div class="spacer"></div>
+  </div>
+        {% empty %}
+          <li>Cette collection ne contient aucun film.</li>
+        {% endfor %}
+</div>
+      </ul>
+    {% empty %}
+      <li>Vous n'avez encore créé aucune collection.</li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

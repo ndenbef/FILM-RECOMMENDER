@@ -1,0 +1,112 @@
+{% extends "film/layout.html" %}
+
+<link rel="stylesheet" type="text/css" href="film/style.css"/>
+
+{% block content %}
+
+{% comment %} {% block user %} 
+<li class="nav-item" id>
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+          <ul class="navbar-nav" id="utilisateur">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.username }} 
+              </a>
+              <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDarkDropdownMenuLink">
+                <li><a class="dropdown-item" href="#">Parametres</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Deconexion</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+    </div>
+    
+</li>
+{% endblock user %} {% endcomment %}
+
+<div class="container-fluid">
+
+<div class="row mt-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+        {% for film in elements %}
+        <div class="col-md-3">
+                <div class="card text-center h-100" id="custom1_cards">
+                    <img src="https://image.tmdb.org/t/p/w200{{ film.poster_path }}" class="card-img-top" alt="{{ film.title }}">
+                    <div class="card-body">
+                    <a class="card-text" href="{% url 'film:film_detail' film_id=film.id %}"> {{ film.title }} </a>
+                </div>
+                </div>
+            <div class="spacer"></div>
+        </div>
+        {% endfor %}
+</div>
+
+</div>
+
+
+<hr>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination pagination-lg justify-content-center">
+    {% if elements.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">
+                <span>&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ elements.previous_page_number }}">
+                <span>&lsaquo;</span>
+            </a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <span>&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <span>&lsaquo;</span>
+            </a>
+        </li>
+    {% endif %}
+    {% for num in elements.paginator.page_range %}
+        {% if elements.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+        {% elif num > elements.number|add:'-3' and num < elements.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if elements.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ elements.next_page_number }}">
+                <span>&rsaquo;</span>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ elements.paginator.num_pages }}">
+                <span>&raquo;</span>
+            </a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <span>&rsaquo;</span>
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <span>&raquo;</span>
+            </a>
+        </li>
+    {% endif %}
+</ul>
+
+      </nav>
+
+{% endblock %}

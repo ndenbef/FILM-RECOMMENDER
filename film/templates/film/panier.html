@@ -1,0 +1,72 @@
+{% extends "film/layout.html" %}
+
+{% block content %}
+<h1>Ma liste de films ajoutés</h1>
+
+    <div class="row mt-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" style="display: grid; grid-template-columns: repeat(4, 1fr);">
+  {% for film in liste_films %}
+  <div class="col-md-3">
+                <div class="card text-center h-100" style="width: 13rem;">
+                    <img src="https://image.tmdb.org/t/p/w200{{ film.poster_path }}" class="card-img-top" alt="{{ film.title }}">
+                    <div class="card-body">
+                    <a class="card-text" href="{% url 'film:film_detail' film_id=film.id %}"> {{ film.title }} </a>
+                    <form method="POST" action="{% url 'film:supprimer_film_panier' film_id=film.id %}"> {% csrf_token %} <input type="hidden" name="movie_id" value="{{ film.movie.id }}"> <button class="btn btn-danger">Retirer</button> </form>
+                </div>
+                </div>
+            <div class="spacer"></div>
+        </div>
+  {% empty %}
+    <p>Votre liste de films est vide</p>
+  {% endfor %}
+
+
+<div class="position-fixed bottom-0 end-0 p-1">
+    <button type="button" class="btn btn-primary btn-lg rounded-circle" data-bs-toggle="modal" data-bs-target="#myModal" data-bs-toggle="tooltip" data-bs-placement="top" title="Creer une nouvelle Collection !" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-collection-play-fill" viewBox="0 0 16 16">
+            <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm6.258-6.437a.5.5 0 0 1 .507.013l4 2.5a.5.5 0 0 1 0 .848l-4 2.5A.5.5 0 0 1 6 12V7a.5.5 0 0 1 .258-.437"/>
+          </svg>
+
+    </button>
+</div>
+
+<!-- The modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        {% if success %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% elif message %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+
+        <!-- The form inside the modal -->
+        <form method="POST" action="{% url 'film:creer_collection' %}">
+          {% csrf_token %}  <!-- CSRF token for security -->
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Nom de votre Collection</label>
+            <input type="text" class="form-control" name="nom_collection" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Veuillez choisir un nom qui vous convient..</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
